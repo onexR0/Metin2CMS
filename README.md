@@ -6,11 +6,6 @@
 > Contactează-mă pe Discord la: **onexro**
 > Toate temele acceptate vor fi adăugate în repo cu numele autorului 💙
 
-- Adauga in account
-```php
-ALTER TABLE account ADD secure_code VARCHAR(6) DEFAULT NULL;
-```
-
 ## ✨ Caracteristici principale
 
 - ✅ Login & Register
