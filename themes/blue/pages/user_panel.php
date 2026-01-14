@@ -27,12 +27,12 @@
 
 			<div class="info-row">
 				<span class="info-label"><?= t('dragon_conins'); ?></span>
-				<span class="info-value">0</span>
+				<span class="info-value"><?= number_format($account['coins']); ?></span>
 			</div>
 
 			<div class="info-row">
 				<span class="info-label"><?= t('dragon_jetons'); ?></span>
-				<span class="info-value">0</span>
+				<span class="info-value"><?= number_format($account['jcoins']); ?></span>
 			</div>
 		</div>
 	</div>
