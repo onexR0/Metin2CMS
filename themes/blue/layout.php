@@ -17,6 +17,7 @@ $hasAnyStatEnabled = $showPlayersOnline || $showPlayers24h || $showAccountsTotal
 <head>
 	<meta charset="utf-8">
 	<title><?= $siteName . " - " . $title ?></title>
+	<link rel="icon" type="image/x-icon" href="<?= $assetsUrl; ?>/img/favicon.ico">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="<?= $assetsUrl; ?>/css/style.css?v=15.5">
 	<link rel="stylesheet" href="<?= $assetsUrl; ?>/css/default.css?v=4.4">
