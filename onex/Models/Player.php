@@ -24,8 +24,9 @@ class Player
 		$db = self::db();
 		$limit = max(1, min($limit, 100));
 
+		$playerDb = Database::getDatabaseName('player');
 		$sql = "SELECT p.name, p.level, p.exp, p.playtime, pi.empire
-		 FROM player p LEFT JOIN player.player_index pi ON p.id = pi.id WHERE p.name NOT LIKE '[%]%' ORDER BY p.level DESC, p.exp DESC LIMIT :lim";
+		 FROM player p LEFT JOIN {$playerDb}.player_index pi ON p.id = pi.id WHERE p.name NOT LIKE '[%]%' ORDER BY p.level DESC, p.exp DESC LIMIT :lim";
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
 		$stmt->execute();
@@ -45,7 +46,8 @@ class Player
 		}
 		$remaining = min($perPage, $maxRows - $offset);
 
-		$sql = "SELECT p.name, p.level, p.exp, p.playtime, pi.empire FROM player p LEFT JOIN player.player_index pi ON p.id = pi.id
+		$playerDb = Database::getDatabaseName('player');
+		$sql = "SELECT p.name, p.level, p.exp, p.playtime, pi.empire FROM player p LEFT JOIN {$playerDb}.player_index pi ON p.id = pi.id
 		 WHERE p.name NOT LIKE '[%]%' ORDER BY p.level DESC, p.exp DESC LIMIT :limit OFFSET :offset";
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':limit',  $remaining, PDO::PARAM_INT);

@@ -24,8 +24,9 @@ class Guild
 		$db = self::db();
 		$limit = max(1, min($limit, 100));
 
+		$playerDb = Database::getDatabaseName('player');
 		$sql = "SELECT  g.name,  g.ladder_point,  g.level, p.name as leader_name, pi.empire as kingdom
-		 FROM guild g LEFT JOIN player p ON g.master = p.id LEFT JOIN player.player_index pi ON g.master = pi.id ORDER BY g.ladder_point DESC LIMIT :lim";
+		 FROM guild g LEFT JOIN player p ON g.master = p.id LEFT JOIN {$playerDb}.player_index pi ON g.master = pi.id ORDER BY g.ladder_point DESC LIMIT :lim";
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
 		$stmt->execute();
@@ -45,8 +46,9 @@ class Guild
 		}
 		$remaining = min($perPage, $maxRows - $offset);
 
+		$playerDb = Database::getDatabaseName('player');
 		$sql = "SELECT  g.name,  g.ladder_point,  g.level, p.name as leader_name, pi.empire as kingdom
-		 FROM guild g LEFT JOIN player p ON g.master = p.id LEFT JOIN player.player_index pi ON g.master = pi.id ORDER BY g.ladder_point DESC LIMIT :limit OFFSET :offset";
+		 FROM guild g LEFT JOIN player p ON g.master = p.id LEFT JOIN {$playerDb}.player_index pi ON g.master = pi.id ORDER BY g.ladder_point DESC LIMIT :limit OFFSET :offset";
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':limit',  $remaining, PDO::PARAM_INT);
 		$stmt->bindValue(':offset', $offset,    PDO::PARAM_INT);
