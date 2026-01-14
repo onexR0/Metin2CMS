@@ -4,7 +4,7 @@ return [
 	'app' => [
 		'site_name'   => 'One-x.Ro',								//nume site
 		'base_url'     => 'http://localhost',					//link http:// sau https://
-		'theme'        => 'orange',								//tema pui numele folderului din themes blue,green,orange,red sau iti poti crea propria tema bazata pe template
+		'theme'        => 'default',								//tema pui numele folderului din themes blue,green,orange,red sau iti poti crea propria tema bazata pe template
 		'session_name' => 'Ejjpp920E9k0vHT',					//schimba cu un nume random pentru siguranta.
 		'password_hash' => 'md5',								// 'md5' | 'sha1' (md5 pentru criptare parola servere normale sau sha1 pentru svfiles owsap)
 	],

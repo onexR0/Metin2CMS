@@ -52,13 +52,16 @@ Proiectul vine cu **4 teme de bază**:
 Tema se poate schimba foarte ușor din fișierul de configurare, de exemplu:
 
 ```php
-// config.php (exemplu)
+// config.php
 return [
     'theme' => 'blue', // valori posibile: blue, green, orange, red
 ];
 ```
 
 ## 🖼️ Screenshots / Demo teme
+
+### Tema Default
+![Tema Albastru](screenshots/default.png)
 
 ### Tema Albastru
 ![Tema Albastru](screenshots/blue.png)
