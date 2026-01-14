@@ -17,8 +17,14 @@ class CoinsController extends Controller
 		
 		$account = null;
 		if ($search !== '') {
-			$accounts = GameAccount::search($search);
-			$account = !empty($accounts) ? $accounts[0] : null;
+			try {
+				$accounts = GameAccount::search($search);
+				$account = !empty($accounts) ? $accounts[0] : null;
+			} catch (\Throwable $e) {
+				error_log("Admin Coins Search Error: " . $e->getMessage());
+				error_log("Stack trace: " . $e->getTraceAsString());
+				$error = t('error_searching_accounts');
+			}
 		}
 
 		$this->view('admin/coins', [
@@ -47,9 +53,13 @@ class CoinsController extends Controller
 			$coinsValue = (int)$coins;
 			$jcoinsValue = (int)$jcoins;
 			
-			GameAccount::updateCoins($login, $coinsValue, $jcoinsValue);
-			
-			$this->redirect('/admin/coins?search=' . urlencode($login) . '&success=' . urlencode(t('coins_updated_success')));
+			try {
+				GameAccount::updateCoins($login, $coinsValue, $jcoinsValue);
+				$this->redirect('/admin/coins?search=' . urlencode($login) . '&success=' . urlencode(t('coins_updated_success')));
+			} catch (\Throwable $e) {
+				error_log("Admin Update Coins Error: " . $e->getMessage());
+				$this->redirect('/admin/coins?search=' . urlencode($login) . '&error=' . urlencode(t('error_updating_coins')));
+			}
 		} else {
 			$this->redirect('/admin/coins');
 		}

@@ -238,7 +238,7 @@ class GameAccount
 			return null;
 		}
 
-		$accountId = $account['id'];
+		$accountId = (int)$account['id'];
 		$playerDb = self::playerDb();
 
 		try {
@@ -246,7 +246,7 @@ class GameAccount
 			$stmt->execute([':account_id' => $accountId]);
 			$password = $stmt->fetchColumn();
 			
-			return $password ?: null;
+			return ($password !== false && $password !== null) ? (string)$password : null;
 		} catch (\PDOException) {
 			return null;
 		}
@@ -265,19 +265,24 @@ class GameAccount
 	{
 		$db = self::db();
 
-		$stmt = $db->prepare("SELECT id, login, email, status, create_time, web_admin, coins, jcoins FROM account WHERE login = :exact OR email = :exact2 LIMIT 1");
-		$stmt->execute([':exact' => $query, ':exact2' => $query]);
-		$result = $stmt->fetchAll();
-		
-		if (!empty($result)) {
-			return $result;
+		try {
+			$stmt = $db->prepare("SELECT id, login, email, status, create_time, web_admin, coins, jcoins FROM account WHERE login = :exact OR email = :exact2 LIMIT 1");
+			$stmt->execute([':exact' => $query, ':exact2' => $query]);
+			$result = $stmt->fetchAll();
+			
+			if (!empty($result)) {
+				return $result;
+			}
+			
+			$stmt = $db->prepare("SELECT id, login, email, status, create_time, web_admin, coins, jcoins FROM account WHERE login LIKE :q1 OR email LIKE :q2 ORDER BY id DESC LIMIT 100");
+			$searchParam = "%{$query}%";
+			$stmt->execute([':q1' => $searchParam, ':q2' => $searchParam]);
+			
+			return $stmt->fetchAll();
+		} catch (\PDOException $e) {
+			error_log("GameAccount::search error: " . $e->getMessage());
+			throw $e;
 		}
-		
-		$stmt = $db->prepare("SELECT id, login, email, status, create_time, web_admin, coins, jcoins FROM account WHERE login LIKE :q1 OR email LIKE :q2 ORDER BY id DESC LIMIT 100");
-		$searchParam = "%{$query}%";
-		$stmt->execute([':q1' => $searchParam, ':q2' => $searchParam]);
-		
-		return $stmt->fetchAll();
 	}
 
 	public static function updateStatus(string $login, string $status): bool
@@ -298,7 +303,7 @@ class GameAccount
 	public static function updateCoins(string $login, int $coins, int $jcoins): bool
 	{
 		$db = self::db();
-		
+
 		try {
 			$stmt = $db->prepare("UPDATE account SET coins = coins + :coins, jcoins = jcoins + :jcoins WHERE login = :l");
 			
@@ -307,7 +312,8 @@ class GameAccount
 				':jcoins' => $jcoins,
 				':l' => $login,
 			]);
-		} catch (\PDOException) {
+		} catch (\PDOException $e) {
+			error_log("GameAccount::updateCoins error for login '{$login}': " . $e->getMessage());
 			return false;
 		}
 	}

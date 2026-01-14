@@ -12,15 +12,24 @@ class AccountsController extends Controller
 
 		$search = trim($_GET['search'] ?? '');
 		
-		$accounts = $search !== '' ? GameAccount::search($search) : [];
+		try {
+			$accounts = $search !== '' ? GameAccount::search($search) : [];
+		} catch (\Throwable $e) {
+			error_log("Admin Account Search Error: " . $e->getMessage());
+			error_log("Stack trace: " . $e->getTraceAsString());
+			$accounts = [];
+			$_SESSION['admin_error'] = t('error_searching_accounts');
+		}
 
 		$this->view('admin/accounts', [
 			'title' => t('accounts'),
 			'accounts' => $accounts,
 			'search' => $search,
 			'success' => $_GET['success'] ?? null,
-			'error' => $_GET['error'] ?? null,
+			'error' => $_GET['error'] ?? $_SESSION['admin_error'] ?? null,
 		]);
+		
+		unset($_SESSION['admin_error']);
 	}
 
 	public function ban(): void

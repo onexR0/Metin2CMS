@@ -335,6 +335,13 @@ class UserPanelController extends Controller
 		}
 
 		$warehousePassword = GameAccount::getWarehousePassword($_SESSION['account_login']);
+		
+		if ($warehousePassword === null) {
+			$_SESSION['panel_err'] = t('warehouse_password_not_found');
+			$this->redirect('/user/panel');
+			return;
+		}
+		
 		$emailSent = Mailer::sendWarehousePassword($this->config, $account['email'], $warehousePassword, $account['login']);
 		if (!$emailSent) {
 			RateLimiter::recordAttempt('send_warehouse_' . $_SESSION['account_id']);
