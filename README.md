@@ -47,3 +47,16 @@ return [
     'theme' => 'blue', // valori posibile: blue, green, orange, red
 ];
 ```
+## 🖼️ Screenshots / Demo teme
+
+### Tema Albastru
+![Tema Albastru](screenshots/blue.png)
+
+### Tema Verde
+![Tema Verde](screenshots/green.png)
+
+### Tema Portocaliu
+![Tema Portocaliu](screenshots/orange.png)
+
+### Tema Roșu
+![Tema Roșu](screenshots/red.png)
