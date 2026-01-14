@@ -35,6 +35,7 @@ class HomeController extends Controller
 			'stats'       => $stats,
 			'socialLinks' => $social,
 			'footerPages' => $footerPages,
+			'isHomePage'  => true,
 		]);
 	}
 }

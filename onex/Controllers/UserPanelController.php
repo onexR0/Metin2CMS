@@ -16,18 +16,30 @@ class UserPanelController extends Controller
 			$this->redirect('/login');
 		}
 
-		$account = GameAccount::findByLogin($_SESSION['account_login']);
-		$characters = GameAccount::getCharacters($_SESSION['account_login']);
+		try {
+			$account = GameAccount::findByLogin($_SESSION['account_login']);
+			if (!$account) {
+				$_SESSION['error'] = t('account_not_found');
+				$this->redirect('/login');
+				return;
+			}
 
-		$this->view('user_panel', [
-			'title'      => t('user_panel'),
-			'account'    => $account,
-			'characters' => $characters,
-			'message'    => $_SESSION['panel_msg'] ?? null,
-			'error'      => $_SESSION['panel_err'] ?? null,
-		]);
+			$characters = GameAccount::getCharacters($_SESSION['account_login']);
 
-		unset($_SESSION['panel_msg'], $_SESSION['panel_err']);
+			$this->view('user_panel', [
+				'title'      => t('user_panel'),
+				'account'    => $account,
+				'characters' => $characters,
+				'message'    => $_SESSION['panel_msg'] ?? null,
+				'error'      => $_SESSION['panel_err'] ?? null,
+			]);
+
+			unset($_SESSION['panel_msg'], $_SESSION['panel_err']);
+		} catch (\Throwable $e) {
+			error_log("User Panel Error: " . $e->getMessage());
+			$_SESSION['error'] = t('error_loading_panel');
+			$this->redirect('/');
+		}
 	}
 
 	public function changePassword(): void

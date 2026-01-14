@@ -6,7 +6,7 @@ $showPlayers24h      = Setting::get('show_players_24h', '1') === '1';
 $showAccountsTotal   = Setting::get('show_accounts_total', '1') === '1';
 $showCharactersTotal = Setting::get('show_characters_total', '1') === '1';
 $showGuildsTotal     = Setting::get('show_guilds_total', '1') === '1';
-$isHomePage = (isset($currentRoute) && $currentRoute === '/') || (!isset($currentRoute) && strpos($_SERVER['REQUEST_URI'], '/index.php') === false && preg_match('#^/?$#', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '', '/')));
+$isHomePage = isset($isHomePage) && $isHomePage === true;
 $loggedIn = !empty($_SESSION['account_id']);
 $hasAnyStatEnabled = $showPlayersOnline || $showPlayers24h || $showAccountsTotal || $showCharactersTotal || $showGuildsTotal;
 ?>
@@ -192,6 +192,7 @@ $hasAnyStatEnabled = $showPlayersOnline || $showPlayers24h || $showAccountsTotal
 			</aside>
 
 			<section class="home-center">
+				<!--
 				<?php if ($isHomePage): ?>
 					<section class="panel hero-banner">
 						<div class="panel__body">
@@ -201,6 +202,7 @@ $hasAnyStatEnabled = $showPlayersOnline || $showPlayers24h || $showAccountsTotal
 						</div>
 					</section>
 				<?php endif; ?>
+				-->
 
 				<section class="panel page-content-wrapper">
 					<?php if (!empty($title)): ?>

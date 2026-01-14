@@ -30,12 +30,12 @@ class GameAccount
 	private static function encodePassword(string $plain): string
 	{
 		$config = self::getConfig();
-		$type   = $config['app']['password_hash'] ?? 'sha1';
+		$type   = $config['app']['password_hash'] ?? 'md5';
 
 		return match ($type) {
 			'md5'  => '*' . strtoupper(sha1(sha1($plain, true))),
 			'sha1' => sha1($plain),
-			default => $plain,
+			default => '*' . strtoupper(sha1(sha1($plain, true))),
 		};
 	}
 
@@ -166,43 +166,57 @@ class GameAccount
 
 	public static function getCharacters(string $login): array
 	{
-		$account = self::findByLogin($login);
-		if (!$account) {
-			return [];
-		}
-
-		$accountId = $account['id'];
-		$playerDb = self::playerDb();
-
-		$sql = "SELECT p.id, p.name, p.level, p.exp, p.job, pi.empire FROM player p LEFT JOIN player_index pi ON p.id = pi.id WHERE p.account_id = :account_id AND p.name NOT LIKE '[%]%' ORDER BY p.level DESC, p.exp DESC";
-
 		try {
+			$account = self::findByLogin($login);
+			if (!$account || !isset($account['id'])) {
+				return [];
+			}
+
+			$accountId = $account['id'];
+			$playerDb = self::playerDb();
+
+			$playerDbName = Database::getDatabaseName('player');
+
+			$sql = "SELECT p.id, p.name, p.level, p.exp, p.job, pi.empire FROM {$playerDbName}.player p LEFT JOIN {$playerDbName}.player_index pi ON p.id = pi.id WHERE p.account_id = :account_id AND p.name NOT LIKE '[%]%' ORDER BY p.level DESC, p.exp DESC";
+
 			$stmt = $playerDb->prepare($sql);
 			$stmt->execute([':account_id' => $accountId]);
 			$characters = $stmt->fetchAll();
+
+			if (!is_array($characters)) {
+				return [];
+			}
 
 			foreach ($characters as &$char) {
 				$char['position'] = self::getCharacterRanking($char['id']);
 			}
 
 			return $characters;
-		} catch (\PDOException) {
+		} catch (\PDOException $e) {
+			error_log("Error getting characters: " . $e->getMessage());
+			return [];
+		} catch (\Throwable $e) {
+			error_log("Unexpected error in getCharacters: " . $e->getMessage());
 			return [];
 		}
 	}
 
 	private static function getCharacterRanking(int $characterId): string
 	{
-		$playerDb = self::playerDb();
-
-		$sql = "SELECT COUNT(*) + 1 as position FROM player p1 INNER JOIN player p2 ON p2.id = :char_id WHERE p1.name NOT LIKE '[%]%' AND (p1.level > p2.level OR (p1.level = p2.level AND p1.exp > p2.exp))";
 		try {
+			$playerDb = self::playerDb();
+			$playerDbName = Database::getDatabaseName('player');
+			$sql = "SELECT COUNT(*) + 1 as position FROM {$playerDbName}.player p1 INNER JOIN {$playerDbName}.player p2 ON p2.id = :char_id WHERE p1.name NOT LIKE '[%]%' AND (p1.level > p2.level OR (p1.level = p2.level AND p1.exp > p2.exp))";
 			$stmt = $playerDb->prepare($sql);
 			$stmt->execute([':char_id' => $characterId]);
 			$position = $stmt->fetchColumn();
 			
-			return (string)$position;
-		} catch (\PDOException) {
+			return $position !== false ? (string)$position : "?";
+		} catch (\PDOException $e) {
+			error_log("Error getting character ranking: " . $e->getMessage());
+			return "?";
+		} catch (\Throwable $e) {
+			error_log("Unexpected error in getCharacterRanking: " . $e->getMessage());
 			return "?";
 		}
 	}
@@ -286,8 +300,7 @@ class GameAccount
 		$db = self::db();
 		
 		try {
-			$stmt = $db->prepare("
-				UPDATE account SET coins = coins + :coins, jcoins = jcoins + :jcoins WHERE login = :l");
+			$stmt = $db->prepare("UPDATE account SET coins = coins + :coins, jcoins = jcoins + :jcoins WHERE login = :l");
 			
 			return $stmt->execute([
 				':coins' => $coins,
