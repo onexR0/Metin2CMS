@@ -188,7 +188,7 @@ class GameAccount
 			}
 
 			foreach ($characters as &$char) {
-				$char['position'] = self::getCharacterRanking($char['id']);
+				$char['position'] = self::getCharacterRanking((int)$char['id']);
 			}
 
 			return $characters;
