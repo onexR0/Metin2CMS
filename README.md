@@ -1,6 +1,12 @@
 # Metin PHP Website (PHP 8+)
 ---
 
+> 📢 **Vrei să contribui cu teme noi?**
+> Dacă ai idei de design și vrei să creezi teme pentru acest site, te poți alătura proiectului!
+> Contactează-mă pe Discord la: **onexro**
+> Toate temele acceptate vor fi adăugate în repo cu numele autorului 💙
+
+
 ## ✨ Caracteristici principale
 
 - ✅ Login & Register
