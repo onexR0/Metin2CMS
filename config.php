@@ -29,8 +29,8 @@ return [
 
 	'recaptcha' => [
 		'enabled'    => true,											//poti activa sau dezactiva recaptcha pentru login/register/recuperare parola...
-		'site_key'   => '6Ldy7kMsAAAAALJgnIzHBZbn8q1XDeX1OCiJBKEI',		//https://www.google.com/recaptcha/admin
-		'secret_key' => '6Ldy7kMsAAAAAK3Fp22KFR98fn9E0JiQBsB7lMTc',		//https://www.google.com/recaptcha/admin
+		'site_key'   => 'public key',		//https://www.google.com/recaptcha/admin
+		'secret_key' => 'secret key',		//https://www.google.com/recaptcha/admin
 	],
 
 	'mail' => [
