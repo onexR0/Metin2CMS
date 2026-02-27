@@ -5,8 +5,15 @@ return [
 		'site_name'   => 'One-x.Ro',								//nume site
 		'base_url'     => 'http://localhost',					//link http:// sau https://
 		'theme'        => 'default',								//tema pui numele folderului din themes blue,green,orange,red sau iti poti crea propria tema bazata pe template
-		'session_name' => 'Ejjpp920E9k0vHT',					//schimba cu un nume random pentru siguranta.
+		'session_name' => 'i9pvCXpm90wZJDDYGYFH',					//schimba cu un nume random pentru siguranta.
 		'password_hash' => 'md5',								// 'md5' | 'sha1' (md5 pentru criptare parola servere normale sau sha1 pentru svfiles owsap)
+	],
+
+	'csrf' => [
+		'enabled'     => true,									//activa/dezactiva CSRF protection
+		'token_name'  => 'TfE0Pd1F17M2NfU4S1rJ',				//token name random pentru siguranta - poti genera unul nou oricand
+		'token_time_name' => 'Lep9LpT8gQXAzR4q2pL4',		//token time name random pentru siguranta
+		'token_lifetime' => 3600,								//durata token-ului in secunde (3600 = 1 ora)
 	],
 
 	'db' => [
